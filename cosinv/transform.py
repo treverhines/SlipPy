@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import division
 import numpy as np
-import matplotlib.pyplot as plt
 
 def _augment(point):
   point = np.array(point,dtype=float,copy=True)
@@ -96,20 +95,20 @@ def point_stretch(S):
 
 def basis_rotation_x(arg):
   a = point_rotation_x(arg)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_rotation_y(arg):
   a = point_rotation_y(arg)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_rotation_z(arg):
   a = point_rotation_z(arg)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_translation(T):
   a = point_translation(T)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_stretch(S):
   a = point_stretch(S)
-  return = a.inverse()
+  return a.inverse()

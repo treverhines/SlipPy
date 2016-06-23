@@ -9,7 +9,6 @@ def _augment(point):
   a = np.ones(s[:-1]+(1,))
   return np.concatenate((point,a),axis=-1)
 
-
 def _unaugment(point):
   point = np.array(point,dtype=float,copy=True)    
   return point[...,:-1]
@@ -97,20 +96,20 @@ def point_stretch(S):
 
 def basis_rotation_x(arg):
   a = point_rotation_x(arg)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_rotation_y(arg):
   a = point_rotation_y(arg)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_rotation_z(arg):
   a = point_rotation_z(arg)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_translation(T):
   a = point_translation(T)
-  return = a.inverse()
+  return a.inverse()
 
 def basis_stretch(S):
   a = point_stretch(S)
-  return = a.inverse()
+  return a.inverse()
