@@ -46,7 +46,7 @@ class Patch:
         bottom left corner of the patch when viewed from the side that 
         the patch is dipping towards
         
-    '''  
+    '''
     self.pos = np.array(pos,dtype=float)
     self.length = np.float64(length)
     self.width = np.float64(width)
@@ -60,13 +60,13 @@ class Patch:
     # build tranformation that transforms from patch coordinate system 
     # to data 
     trans  = transform.point_translation(-self.pos_patch)
-    trans *= transform.point_stretch([self.length,self.width,1.0]) 
-    trans *= transform.point_rotation_x(np.pi*self.dip/180.0)
-    trans *= transform.point_rotation_z(np.pi/2.0 - np.pi*self.strike/180.0)
-    trans *= transform.point_translation(self.pos)
+    trans += transform.point_stretch([self.length,self.width,1.0]) 
+    trans += transform.point_rotation_x(np.pi*self.dip/180.0)
+    trans += transform.point_rotation_z(np.pi/2.0 - np.pi*self.strike/180.0)
+    trans += transform.point_translation(self.pos)
 
-    self._patch_to_data = trans
-    self._data_to_patch = trans.inverse()
+    self._patch_to_user = trans
+    self._user_to_patch = trans.inverse()
     self.check_breach()
     return
     
@@ -79,24 +79,28 @@ class Patch:
                           [1.0,1.0,0.0],
                           [1.0,0.0,0.0],
                           [0.0,0.0,0.0]])
-    pnt_data = self.patch_to_data(pnt_patch)
+    pnt_data = self.patch_to_user(pnt_patch)
     if np.any(pnt_data[:,2] > tol):
       warnings.warn('patch has positive z coordinate')
 
-  def patch_to_data(self,x):
+  def patch_to_user(self,x,inverse=False):
     ''' 
+    transforms points from the patch to user coordinate system
+    
     Parameters
     ----------
       x : (...,3) array in patch coordinates
-
+      
     Returns 
     -------
       out : (...,3) array in data coordinates
     '''  
-    return self._patch_to_data(x)
+    return self._patch_to_user(x)
 
-  def data_to_patch(self,x):
+  def user_to_patch(self,x):
     ''' 
+    transforms points from the user to patch coordinate system
+
     Parameters
     ----------
       x : (...,3) array in data coordinates
@@ -105,7 +109,7 @@ class Patch:
     -------
       out : (...,3) array in patch coordinates
     '''  
-    return self._data_to_patch(x)
+    return self._user_to_patch(x)
     
   def discretize(self,Nl,Nw):    
     ''' 
@@ -117,8 +121,7 @@ class Patch:
     x_patch_grid,y_patch_grid = np.meshgrid(x_patch,y_patch)
     x_patch_flat,y_patch_flat = x_patch_grid.ravel(),y_patch_grid.ravel()
     pnt_patch = np.array([x_patch_flat,y_patch_flat,np.zeros(Nl*Nw)]).T
-    print(pnt_patch.shape)
-    pnt_data = self.patch_to_data(pnt_patch)
+    pnt_data = self.patch_to_user(pnt_patch)
     length = self.length/Nl
     width = self.width/Nw
     sub_patches = []
@@ -127,26 +130,16 @@ class Patch:
 
     return sub_patches
   
-  def get_patch_polygon(self,**kwargs):
+  def get_polygon(self,**kwargs):
     ''' 
     returns a matplotlib.patch.Polygon instance 
     '''
-    vert = self.patch_to_data([[0.0,0.0,0.0],
+    vert = self.patch_to_user([[0.0,0.0,0.0],
                                [1.0,0.0,0.0],
                                [1.0,1.0,0.0],
                                [0.0,1.0,0.0]])
     poly = Polygon(vert[:,[0,1]],**kwargs)     
     return poly
-
-  def draw_patch(self,ax=None,**kwargs):
-    ''' 
-    draws a Polygon
-    '''
-    if ax is None:
-      ax = plt.gca()
-
-    poly = self.get_patch_polygon(**kwargs)
-    ax.add_artist(poly)
       
 def draw_patches(patch_list,colors=None,ax=None,**kwargs):
   ''' 
@@ -164,7 +157,7 @@ def draw_patches(patch_list,colors=None,ax=None,**kwargs):
 
   polys = []
   for p in patch_list:
-    polys += [p.get_patch_polygon()]
+    polys += [p.get_polygon()]
   
   pc = PatchCollection(polys,**kwargs)
   if colors is not None:

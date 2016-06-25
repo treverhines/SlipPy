@@ -6,15 +6,15 @@ import unittest
 class Test(unittest.TestCase):
   def test_idenity(self):
     T  = cosinv.transform.point_translation([1.0,2.0,3.0])
-    T *= cosinv.transform.point_stretch([1.5,2.5,3.5])
-    T *= cosinv.transform.point_rotation_x(1.5)
-    T *= cosinv.transform.point_rotation_y(2.5)
-    T *= cosinv.transform.point_rotation_z(3.5)
-    T *= cosinv.transform.basis_rotation_z(3.5)
-    T *= cosinv.transform.basis_rotation_y(2.5)
-    T *= cosinv.transform.basis_rotation_x(1.5)
-    T *= cosinv.transform.basis_stretch([1.5,2.5,3.5])
-    T *= cosinv.transform.basis_translation([1.0,2.0,3.0])
+    T += cosinv.transform.point_stretch([1.5,2.5,3.5])
+    T += cosinv.transform.point_rotation_x(1.5)
+    T += cosinv.transform.point_rotation_y(2.5)
+    T += cosinv.transform.point_rotation_z(3.5)
+    T += cosinv.transform.basis_rotation_z(3.5)
+    T += cosinv.transform.basis_rotation_y(2.5)
+    T += cosinv.transform.basis_rotation_x(1.5)
+    T += cosinv.transform.basis_stretch([1.5,2.5,3.5])
+    T += cosinv.transform.basis_translation([1.0,2.0,3.0])
     self.assertTrue(np.all(np.isclose(T.get_M(),np.eye(4))))
 
   def test_translation(self):

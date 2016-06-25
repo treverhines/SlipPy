@@ -41,11 +41,23 @@ class Transform:
             self._M[[0,1,2],1],
             self._M[[0,1,2],2])
 
-  def __mul__(self,other):
+  def then(self,other):
+    ''' 
+    combines transformation operations
+    
+    Example
+    -------
+      >>> RotateX = point_rotation_x(1.0)
+      >>> RotateY = point_rotation_y(2.0)
+      >>> TotalRotation = RotateX.then(RotateY)
+    '''
     return Transform(other._M.dot(self._M))
+      
+  def __add__(self,other):
+    return self.then(other)
 
-  def __div__(self,other):
-    return self*other.inverse()
+  def __sub__(self,other):
+    return self.then(other.inverse())
 
 
 def identity():
@@ -91,7 +103,6 @@ def point_stretch(S):
                 [0.0, 0.0, S[2], 0.0],
                 [0.0, 0.0, 0.0, 1.0]])
   return Transform(M)
-
 
 def basis_rotation_x(arg):
   a = point_rotation_x(arg)
