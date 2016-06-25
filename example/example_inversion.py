@@ -3,52 +3,14 @@ import numpy as np
 import cosinv.patch
 import cosinv.basis
 import cosinv.io
-from cosinv.gbuild import flatten_vector_array
+import cosinv.bm
+import cosinv.inversion
 from cosinv.gbuild import build_system_matrix
 import matplotlib.pyplot as plt
 import scipy.optimize
-from mpl_toolkits.basemap import Basemap
 np.random.seed(1)
 
-def geodetic_to_cartesian(pos_geo,basemap):
-  pos_geo = np.asarray(pos_geo)
-  pos_x,pos_y = bm(pos_geo[:,0],pos_geo[:,1])
-  pos_cart = np.array([pos_x,pos_y]).T
-  return pos_cart
-
-def cartesian_to_geodetic(pos_cart,basemap):
-  pos_cart = np.asarray(pos_cart)
-  pos_lon,pos_lat = bm(pos_cart[:,0],pos_cart[:,1],inverse=True)
-  pos_geo = np.array([pos_lon,pos_lat]).T
-  return pos_geo
-
-def create_default_basemap(lon_lst,lat_lst,resolution='c'):
-  ''' 
-  creates a basemap that bounds lat_lst and lon_lst
-  '''
-  lon_buff = (max(lon_lst) - min(lon_lst))/20.0
-  lat_buff = (max(lat_lst) - min(lat_lst))/20.0
-  if lon_buff < 0.2:
-    lon_buff = 0.2
-
-  if lat_buff < 0.2:
-    lat_buff = 0.2
-
-  llcrnrlon = min(lon_lst) - lon_buff
-  llcrnrlat = min(lat_lst) - lat_buff
-  urcrnrlon = max(lon_lst) + lon_buff
-  urcrnrlat = max(lat_lst) + lat_buff
-  lon_0 = (llcrnrlon + urcrnrlon)/2.0
-  lat_0 = (llcrnrlat + urcrnrlat)/2.0
-  return Basemap(projection='tmerc',
-                 lon_0 = lon_0,
-                 lat_0 = lat_0,
-                 llcrnrlon = llcrnrlon,
-                 llcrnrlat = llcrnrlat,
-                 urcrnrlon = urcrnrlon,
-                 urcrnrlat = urcrnrlat,
-                 resolution = resolution)
-
+''' 
 def reg_nnls(G,L,d):
   dext = np.concatenate((d,np.zeros(L.shape[0])))
   Gext = np.vstack((G,L))
@@ -72,16 +34,18 @@ slip_basis = np.array([[ 1.0,  1.0, 0.0],
 #####################################################################
 #####################################################################
 #####################################################################
+### LOAD IN ALL DATA
+pos_geo,disp,sigma = cosinv.io.read_gps_data('synthetic_gps.txt')
+
+
 
 ## observation points
 #####################################################################
-pos_geo,disp,sigma = cosinv.io.read_gps_data('synthetic_gps.txt')
 Nx  = len(pos_geo)
 
 # create basemap to convert geodetic to cartesian
-bm = create_default_basemap(pos_geo[:,0],pos_geo[:,1])
-pos_cart = geodetic_to_cartesian(pos_geo,bm)
-pos_cart = np.hstack((pos_cart,np.zeros((Nx,1))))
+bm = cosinv.bm.create_default_basemap(pos_geo[:,0],pos_geo[:,1])
+pos_cart = cosinv.bm.geodetic_to_cartesian(pos_geo,bm)
 
 # flatten the positions, displacements, and uncertainties
 pos_f = pos_cart[:,None,:].repeat(3,axis=1).reshape((Nx*3,3))
@@ -95,8 +59,7 @@ disp_basis_f = disp_basis.reshape((Nx*3,3))
 
 ### build patches
 #####################################################################
-segment_pos_cart = geodetic_to_cartesian([segment_pos_geo[:2]],bm)[0]
-segment_pos_cart = np.hstack((segment_pos_cart,segment_pos_geo[2]))
+segment_pos_cart = cosinv.bm.geodetic_to_cartesian(segment_pos_geo,bm)
 
 P = cosinv.patch.Patch(segment_pos_cart,length,width,strike,dip)
 Ps = np.array(P.discretize(Nl,Nw))
@@ -130,15 +93,14 @@ pred_sigma = np.zeros((Nx,3))
 #####################################################################
 cosinv.io.write_gps_data(pos_geo,pred,pred_sigma,'predicted_gps.txt')
 
-patch_pos_cart = np.array([i.patch_to_user([0.0,1.0,0.0])[:2] for i in Ps])
-patch_pos_geo = cartesian_to_geodetic(patch_pos_cart,bm)
-patch_depth = np.array([i.patch_to_user([0.0,1.0,0.0])[2] for i in Ps])
+patch_pos_cart = np.array([i.patch_to_user([0.0,1.0,0.0]) for i in Ps])
+patch_pos_geo = cosinv.bm.cartesian_to_geodetic(patch_pos_cart,bm)
 patch_strike = [i.strike for i in Ps]
 patch_dip = [i.dip for i in Ps]
 patch_length = [i.length for i in Ps]
 patch_width = [i.width for i in Ps]
 
-cosinv.io.write_slip_data(patch_pos_geo,patch_depth,
+cosinv.io.write_slip_data(patch_pos_geo,
                           patch_strike,patch_dip,
                           patch_length,patch_width,
                           slip,'predicted_slip.txt')
@@ -146,25 +108,47 @@ cosinv.io.write_slip_data(patch_pos_geo,patch_depth,
 #####################################################################
 ### Plot Solution
 #####################################################################
-input = cosinv.io.read_slip_data('predicted_slip.txt')
+'''
+strike = 20.0 # degrees
+dip = 80.0 # degrees
+length = 1000000.0
+width = 1000000.0
+segment_pos_geo = np.array([0.0,0.0,0.0]) # top center of segment
+Nl = 40
+Nw = 20
+slip_basis = np.array([[ 1.0,  1.0, 0.0],
+                       [ 1.0, -1.0, 0.0]])
+params = {'strike':20.0,
+          'dip':80.0,
+          'length':1000000.0,
+          'width':1000000.0,
+          'position':[0.0,0.0,0.0],
+          'Nlength':20,
+          'Nwidth':20,
+          'basis':[[1.0,1.0,0.0],[1.0,-1.0,0.0]],
+          'penalty':0.001}
+
+cosinv.inversion.main(params,
+                      gps_input_file='synthetic_gps.txt',
+                      gps_output_file='predicted_gps.txt',
+                      slip_output_file='predicted_slip.txt')
+                   
 
 pred_pos_geo,pred_disp,pred_sigma = cosinv.io.read_gps_data('predicted_gps.txt')
-Nx = len(pred_pos_geo)
-bm = create_default_basemap(pred_pos_geo[:,0],pred_pos_geo[:,1])
-pred_pos_cart = geodetic_to_cartesian(pred_pos_geo,bm)
+bm = cosinv.bm.create_default_basemap(pred_pos_geo[:,0],pred_pos_geo[:,1])
+pred_pos_cart = cosinv.bm.geodetic_to_cartesian(pred_pos_geo,bm)
 
 obs_pos_geo,obs_disp,obs_sigma = cosinv.io.read_gps_data('synthetic_gps.txt')
-obs_pos_cart = geodetic_to_cartesian(obs_pos_geo,bm)
+obs_pos_cart = cosinv.bm.geodetic_to_cartesian(obs_pos_geo,bm)
 
+input = cosinv.io.read_slip_data('predicted_slip.txt')
 patch_pos_geo = input[0]
-patch_depth = input[1]
-patch_pos_cart = geodetic_to_cartesian(patch_pos_geo,bm)
-patch_pos_cart = np.hstack((patch_pos_cart,patch_depth[:,None]))
-patch_strike = input[2]
-patch_dip = input[3]
-patch_length = input[4]
-patch_width = input[5]
-slip = input[6]
+patch_pos_cart = cosinv.bm.geodetic_to_cartesian(patch_pos_geo,bm)
+patch_strike = input[1]
+patch_dip = input[2]
+patch_length = input[3]
+patch_width = input[4]
+slip = input[5]
 Ps = [cosinv.patch.Patch(p,l,w,s,d) for p,l,w,s,d in zip(patch_pos_cart,
                                                          patch_length,
                                                          patch_width,

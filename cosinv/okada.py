@@ -1,5 +1,5 @@
 import numpy as np
-import dc3d
+import cosinv.dc3d
 import warnings
 
 def patch_dislocation(x,slip,patch,lamb=3.2e10,mu=3.2e10):
@@ -98,7 +98,7 @@ def dislocation(x,
   disp = np.zeros((len(x),3))
   derr = np.zeros((len(x),3,3))
   for i,xi in enumerate(x):
-    out = dc3d.dc3dwrapper(alpha,xi,c,dip,length_range,width_range,slip)
+    out = cosinv.dc3d.dc3dwrapper(alpha,xi,c,dip,length_range,width_range,slip)
     status = out[0]
     if status != 0:
       warnings.warn('dc3d returned with error code %s' % status)   
