@@ -19,7 +19,7 @@ params = {'strike':70.0,
           'position':[-84.2,43.3,0.0],
           'Nlength':40,
           'Nwidth':20,
-          'basis':[[1.0,1.0,0.0],[1.0,-1.0,0.0]],
+          'basis':[[1.0,0.0,0.0],[0.0,1.0,0.0]],
           'penalty':0.01}
 
 cosinv.inversion.main(params,

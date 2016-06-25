@@ -56,6 +56,16 @@ def create_default_basemap(lon_lst,lat_lst,resolution='c'):
   ''' 
   creates a basemap that bounds lat_lst and lon_lst
   '''
+  if (len(lon_lst) == 0) | (len(lat_lst) == 0):
+    return Basemap(projection='tmerc',
+                   lon_0 = -90.0,
+                   lat_0 = 41.0,
+                   llcrnrlat = 26.0,
+                   llcrnrlon = -128.0,
+                   urcrnrlat = 48.0,
+                   urcrnrlon = -53.0,
+                   resolution = 'c')
+    
   lon_buff = (max(lon_lst) - min(lon_lst))/20.0
   lat_buff = (max(lat_lst) - min(lat_lst))/20.0
   if lon_buff < 0.2:
