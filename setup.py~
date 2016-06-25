@@ -8,12 +8,12 @@ ext.append(Extension('DC3D',
                                 'cosinv/dc3d/DC3D.pyf'],
                      extra_compile_args=compile_args))
 setup(
-   name='CosInv',
-   packages=['cosinv','cosinv/dc3d'],
-   scripts=['exec/CosInv','exec/CosInvPlot']
+   name='SlipPy',
+   packages=['slippy','slippy/dc3d'],
+   scripts=['exec/SlipPy','exec/PlotSlipPy'],
    version='0.1.0',
    description='module for inverting coseismic slip from GPS and InSAR data',
    author='Trever Hines',
    author_email='hinest@umich.edu',
-   url='https://github.com/treverhines/CosInv',
+   url='https://github.com/treverhines/SlipPy',
    ext_modules=ext)

@@ -21,7 +21,8 @@ Nw = 20
 ## observation points
 #####################################################################
 Nx = 100
-pos_geo = np.random.uniform(-3,3,(Nx,3))
+#pos_geo = np.random.uniform(-3,3,(Nx,3))
+pos_geo = np.random.normal(0.0,1.0,(Nx,3))
 pos_geo[:,0] += -84.2
 pos_geo[:,1] += 43.3
 pos_geo[:,2] = 0.0

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import cosinv.io
-import cosinv.basis
-import cosinv.bm
-import cosinv.patch
-import cosinv.gbuild
+import slippy.io
+import slippy.basis
+import slippy.bm
+import slippy.patch
+import slippy.gbuild
 import numpy as np
 import scipy.optimize
 import sys
@@ -41,12 +41,12 @@ def main(command_line_kwargs,
   obs_basis_f = np.zeros((0,3))
 
   if gps_input_file is not None:
-    gps_input = cosinv.io.read_gps_data(gps_input_file)    
+    gps_input = slippy.io.read_gps_data(gps_input_file)    
     Ngps = len(gps_input[0])
     obs_gps_pos_geo = gps_input[0]
     obs_gps_disp = gps_input[1]
     obs_gps_sigma = gps_input[2]
-    obs_gps_basis = cosinv.basis.cardinal_basis((Ngps,3))
+    obs_gps_basis = slippy.basis.cardinal_basis((Ngps,3))
     
     obs_disp_fi = obs_gps_disp.reshape((Ngps*3,))
     obs_sigma_fi = obs_gps_sigma.reshape((Ngps*3,))
@@ -66,7 +66,7 @@ def main(command_line_kwargs,
     Ngps = 0
 
   if insar_input_file is not None:
-    insar_input = cosinv.io.read_gps_data(gps_input_file)    
+    insar_input = slippy.io.read_gps_data(gps_input_file)    
     Ninsar = len(insar_input[0])
     obs_insar_pos_geo = insar_input[0]
     obs_insar_disp = insar_input[1]
@@ -96,14 +96,14 @@ def main(command_line_kwargs,
 
   ### convert from geodetic to cartesian
   ###################################################################
-  bm = cosinv.bm.create_default_basemap(obs_pos_geo_f[:,0],obs_pos_geo_f[:,1])
+  bm = slippy.bm.create_default_basemap(obs_pos_geo_f[:,0],obs_pos_geo_f[:,1])
   
-  obs_pos_cart_f = cosinv.bm.geodetic_to_cartesian(obs_pos_geo_f,bm)   
-  seg_pos_cart = cosinv.bm.geodetic_to_cartesian(seg_pos_geo,bm)
+  obs_pos_cart_f = slippy.bm.geodetic_to_cartesian(obs_pos_geo_f,bm)   
+  seg_pos_cart = slippy.bm.geodetic_to_cartesian(seg_pos_geo,bm)
 
   ### discretize the fault segment
   ###################################################################
-  seg = cosinv.patch.Patch(seg_pos_cart,
+  seg = slippy.patch.Patch(seg_pos_cart,
                            seg_length,seg_width,
                            seg_strike,seg_dip)
   patches = np.array(seg.discretize(seg_Nlength,seg_Nwidth))
@@ -118,7 +118,7 @@ def main(command_line_kwargs,
     
   ### build system matrix
   ###################################################################
-  G = cosinv.gbuild.build_system_matrix(obs_pos_cart_f,
+  G = slippy.gbuild.build_system_matrix(obs_pos_cart_f,
                                         patches_f,
                                         obs_basis_f,
                                         slip_basis_f)
@@ -133,7 +133,7 @@ def main(command_line_kwargs,
   pred_disp_f = G.dot(slip_f)
 
   slip = slip_f.reshape((Ns,Ds))
-  cardinal_slip = cosinv.basis.cardinal_components(slip,slip_basis)
+  cardinal_slip = slippy.basis.cardinal_components(slip,slip_basis)
 
   # split predicted displacements into insar and GPS component
   pred_disp_f_gps = pred_disp_f[:3*Ngps]
@@ -143,7 +143,7 @@ def main(command_line_kwargs,
   ### get slip patch data
   #####################################################################
   patches_pos_cart =[i.patch_to_user([0.5,1.0,0.0]) for i in patches]
-  patches_pos_geo = cosinv.bm.cartesian_to_geodetic(patches_pos_cart,bm)
+  patches_pos_geo = slippy.bm.cartesian_to_geodetic(patches_pos_cart,bm)
   patches_strike = [i.strike for i in patches]
   patches_dip = [i.dip for i in patches]
   patches_length = [i.length for i in patches]
@@ -151,16 +151,16 @@ def main(command_line_kwargs,
 
   ### write output
   #####################################################################
-  cosinv.io.write_slip_data(patches_pos_geo,
+  slippy.io.write_slip_data(patches_pos_geo,
                             patches_strike,patches_dip,
                             patches_length,patches_width,
                             cardinal_slip,slip_output_file)
 
-  cosinv.io.write_gps_data(obs_gps_pos_geo,
+  slippy.io.write_gps_data(obs_gps_pos_geo,
                            pred_disp_gps,0.0*pred_disp_gps,
                            gps_output_file)
 
-  cosinv.io.write_insar_data(obs_insar_pos_geo,
+  slippy.io.write_insar_data(obs_insar_pos_geo,
                              pred_disp_insar,0.0*pred_disp_insar,
                              obs_insar_basis, 
                              insar_output_file)

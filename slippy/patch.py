@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-import cosinv.transform
+import slippy.transform
 import warnings
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
@@ -59,11 +59,11 @@ class Patch:
 
     # build tranformation that transforms from patch coordinate system 
     # to data 
-    trans  = cosinv.transform.point_translation(-self.pos_patch)
-    trans += cosinv.transform.point_stretch([self.length,self.width,1.0]) 
-    trans += cosinv.transform.point_rotation_x(np.pi*self.dip/180.0)
-    trans += cosinv.transform.point_rotation_z(np.pi/2.0 - np.pi*self.strike/180.0)
-    trans += cosinv.transform.point_translation(self.pos)
+    trans  = slippy.transform.point_translation(-self.pos_patch)
+    trans += slippy.transform.point_stretch([self.length,self.width,1.0]) 
+    trans += slippy.transform.point_rotation_x(np.pi*self.dip/180.0)
+    trans += slippy.transform.point_rotation_z(np.pi/2.0 - np.pi*self.strike/180.0)
+    trans += slippy.transform.point_translation(self.pos)
 
     self._patch_to_user = trans
     self._user_to_patch = trans.inverse()

@@ -3,7 +3,7 @@
 this script demonstrates how to generate, discretize, and view Patch 
 instances
 '''
-import cosinv.patch
+import slippy.patch
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -24,7 +24,7 @@ pos = [-1.0,2.0,0.0] # top center of patch
 
 ### initiate patch
 #####################################################################
-P = cosinv.patch.Patch(pos,length,width,strike,dip)
+P = slippy.patch.Patch(pos,length,width,strike,dip)
 
 ### discretize patch
 #####################################################################
@@ -43,7 +43,7 @@ patch_depths = patch_centers[:,2]
 
 # this function plots all patches in Ps and colors them by depth. pc 
 # is a polygon collection which i use to generate a colorbar
-pc = cosinv.patch.draw_patches(Ps,ax=ax,colors=patch_depths)
+pc = slippy.patch.draw_patches(Ps,ax=ax,colors=patch_depths)
 fig.colorbar(pc,ax=ax)
 
 ### initiate new patch
@@ -58,7 +58,7 @@ pos = [-2.0,-1.0,0.0] # top center of patch
 # patch with respect to the patch coordinate system. [0.0,1.0,0.0] is 
 # the top left side of the fault when viewed from the side the patch 
 # dips towards
-P = cosinv.patch.Patch(pos,length,width,strike,dip,
+P = slippy.patch.Patch(pos,length,width,strike,dip,
                        pos_patch=[0.0,1.0,0.0])
 
 # get a polygon artist for the patch and add it to the axes

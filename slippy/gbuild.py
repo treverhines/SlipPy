@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from cosinv.okada import dislocation
+from slippy.okada import dislocation
 import numpy as np
 import modest
 
