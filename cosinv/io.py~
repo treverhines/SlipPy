@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import numpy as np
+import modest
 
+@modest.funtime
 def read_gps_data(file_name):  
   ''' 
   FILE FORMAT
@@ -18,6 +20,7 @@ def read_gps_data(file_name):
   pos_geodetic = np.hstack((lonlat,np.zeros((Nx,1))))
   return pos_geodetic,disp,sigma
 
+@modest.funtime
 def read_insar_data(file_name):  
   ''' 
   FILE FORMAT
@@ -36,6 +39,7 @@ def read_insar_data(file_name):
   pos_geodetic = np.hstack((lonlat,np.zeros((Nx,1))))
   return pos_geodetic,disp,sigma,basis
 
+@modest.funtime
 def read_slip_data(file_name):
   ''' 
   FILE FORMAT
@@ -54,6 +58,7 @@ def read_slip_data(file_name):
   return pos_geodetic,strike,dip,length,width,slip
   
 
+@modest.funtime
 def write_gps_data(pos_geodetic,disp,sigma,file_name):
   ''' 
   FILE FORMAT
@@ -73,6 +78,7 @@ def write_gps_data(pos_geodetic,disp,sigma,file_name):
   return
 
 
+@modest.funtime
 def write_insar_data(pos_geodetic,disp,sigma,basis,file_name):  
   ''' 
   FILE FORMAT
@@ -88,11 +94,12 @@ def write_insar_data(pos_geodetic,disp,sigma,basis,file_name):
   
   lonlat = pos_geodetic[:,[0,1]]
   data = np.hstack((lonlat,disp[:,None],sigma[:,None],basis))
-  header = "lon[degrees] lat[degrees] disp_los[m] sigma_los[m] Ve Vn Vu"
+  header = "lon[degrees] lat[degrees] disp_los[m] sigma_los[m] V_e V_n V_u"
   np.savetxt(file_name,data,header=header,fmt='%0.4f')
   return
 
 
+@modest.funtime
 def write_slip_data(pos_geodetic,strike,dip,length,width,slip,file_name):  
   ''' 
   FILE FORMAT

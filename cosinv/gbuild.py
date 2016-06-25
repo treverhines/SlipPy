@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 from cosinv.okada import dislocation
 import numpy as np
+import modest
 
+@modest.funtime
 def build_system_matrix(pos,patches,disp_directions,slip_directions):
   ''' 
   builds the system matrix 

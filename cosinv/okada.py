@@ -1,14 +1,39 @@
 import numpy as np
 import cosinv.dc3d
 import warnings
+import modest
 
 def patch_dislocation(x,slip,patch,lamb=3.2e10,mu=3.2e10):
+  ''' 
+  Parameters
+  ----------
+    x : (N,3) array
+      observation points
+    
+    slip : (3,) array
+      slip vector
+      
+    patch : Patch instance
+    
+    lamb : float  
+
+    mu : float
+  
+  Returns
+  -------
+    disp : (N,3) array
+      displacements
+    
+    derr : (N,3,3) array
+      displacement derivatives  
+  '''
   return dislocation(x,slip,
                      patch.patch_to_user([0.5,1.0,0.0]),
                      patch.length,patch.width,
                      patch.strike,patch.dip,
                      lamb=lamb,mu=mu)
                       
+@modest.funtime
 def dislocation(x,
                 slip,
                 top_center,
@@ -86,14 +111,13 @@ def dislocation(x,
   length_range = np.array([-0.5*length,0.5*length])
   width_range = np.array([-width,0.0])
 
-  # transformation matrix which changes the reference frame to that used by
-  # okada92 
+  # transform to the okada reference frame
   x[:,0] -= center[0]
   x[:,1] -= center[1]
-  T = np.array([[   np.cos(argZ),   np.sin(argZ),       0.0],
+  R = np.array([[   np.cos(argZ),   np.sin(argZ),       0.0],
                 [  -np.sin(argZ),   np.cos(argZ),       0.0],
                 [            0.0,            0.0,       1.0]])
-  x = np.einsum('ij,...j',T,x)
+  x = np.einsum('ij,...j',R,x)
 
   disp = np.zeros((len(x),3))
   derr = np.zeros((len(x),3,3))
@@ -107,12 +131,8 @@ def dislocation(x,
     derr[i,:,:] = out[2].T
 
   # return solution to original coordinate system
-  T = np.array([[   np.cos(argZ),  -np.sin(argZ),       0.0],
-                [   np.sin(argZ),   np.cos(argZ),       0.0],
-                [            0.0,            0.0,       1.0]])
-
-  disp = np.einsum('ij,...j',T,disp)
-  derr = np.einsum('ij,...jk,kl',T,derr,T.T)
+  disp = np.einsum('ij,...j',R.T,disp)
+  derr = np.einsum('ij,...jk,kl',R.T,derr,R)
 
   return disp,derr
 

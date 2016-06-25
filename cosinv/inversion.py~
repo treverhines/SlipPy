@@ -7,12 +7,15 @@ import cosinv.gbuild
 import numpy as np
 import scipy.optimize
 import sys
+import modest
 
+@modest.funtime
 def reg_nnls(G,L,d):
   dext = np.concatenate((d,np.zeros(L.shape[0])))
   Gext = np.vstack((G,L))
   return scipy.optimize.nnls(Gext,dext)[0]
 
+@modest.funtime
 def main(command_line_kwargs,
          gps_input_file=None,
          insar_input_file=None,
