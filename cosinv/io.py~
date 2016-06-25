@@ -38,7 +38,7 @@ def read_slip_data(file_name):
   -----------
 
     HEADER
-    lon[degrees] lat[degrees] depth[km] strike[degrees] dip[degrees] length[km] width[km] left-lateral[m] thrust[m] tensile[m]
+    lon[degrees] lat[degrees] depth[m] strike[degrees] dip[degrees] length[m] width[m] left-lateral[m] thrust[m] tensile[m]
   '''
   data = np.loadtxt(file_name,skiprows=1)
   lonlat = data[:,[0,1]]
@@ -82,7 +82,7 @@ def write_slip_data(lonlat,depth,strike,dip,length,width,slip,file_name):
   -----------
 
     HEADER
-    lon[degrees] lat[degrees] depth[km] strike[degrees] dip[degrees] length[km] width[km] left-lateral[m] thrust[m] tensile[m]
+    lon[degrees] lat[degrees] depth[m] strike[degrees] dip[degrees] length[m] width[m] left-lateral[m] thrust[m] tensile[m]
   '''
   lonlat = np.asarray(lonlat)
   depth = np.asarray(depth)
@@ -94,6 +94,6 @@ def write_slip_data(lonlat,depth,strike,dip,length,width,slip,file_name):
 
   data = np.hstack((lonlat,depth[:,None],strike[:,None],
                     dip[:,None],length[:,None],width[:,None],slip))
-  header = "lon[degrees] lat[degrees] depth[km] strike[degrees] dip[degrees] length[km] width[km] left-lateral[m] thrust[m] tensile[m]"
+  header = "lon[degrees] lat[degrees] depth[m] strike[degrees] dip[degrees] length[m] width[m] left-lateral[m] thrust[m] tensile[m]"
   np.savetxt(file_name,data,header=header,fmt='%0.4f')
   return

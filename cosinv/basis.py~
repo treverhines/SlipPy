@@ -1,7 +1,34 @@
 #!/usr/bin/env python
 import numpy as np
 import transform
+import warnings
 
+def ginv(A):
+  ''' 
+  Returns the generalized inverse of A. Unlike np.linalg.pinv, this 
+  fuction supports broadcasting. 
+  
+  Parameters
+  ----------
+    A : (...,N,M) array
+    
+    damping : float, optional
+    
+  Returns
+  -------
+    out : (...,M,N) array
+    
+  ''' 
+  AtA = np.einsum('...ji,...jk->...ik',A,A)
+  # check condition number
+  cond = np.linalg.cond(AtA)
+  if np.any(cond > 1e10):
+    warnings.warn('matrix is highly ill-conditioned')
+  
+  AtAinv = np.linalg.inv(AtA)
+  out = np.einsum('...ij,...kj->...ik',AtAinv,A)
+  return out
+    
 def cardinal_basis(shape):
   ''' 
   Returns the cardinal basis vectors in the cardinal basis reference 
@@ -14,23 +41,58 @@ def cardinal_basis(shape):
 
   return basis
   
+
 def cardinal_components(components,basis):
   ''' 
-  return the vector components in the cardinal coordinate system
+  return the vector components in the cardinal coordinate
+
+  Parameters
+  ----------
+    components : (...,R) array
+      components for each of the basis vector 
+    
+    basis : (...,R,D) array
+      basis vectors defined with respect to the cardinal coordinate 
+      system
+      
+  Returns
+  -------
+    components : (...,D) array
+      components in the cardinal basis system
+  
   '''
   # transpose the second and third axes of basis so that each column 
   # is a basis vector rather than each row being a basis vector
   components = np.asarray(components)
   basis = np.asarray(basis)
-
-  basis = np.einsum('...ij->...ji',basis)
-  return np.einsum('...ij,...j->...i',basis,components)
-
+  new_basis_shape = basis.shape[:-2] + (basis.shape[-1],)
+  new_basis = cardinal_basis(new_basis_shape)
+  out = change_basis(components,basis,new_basis) 
+  return out
 
 def change_basis(components,basis,new_basis):
   ''' 
-  Returns the components after transforming the basis from 'basis' to 
-  'new_basis'
+  returns the components with respect to a new basis system
+  
+  Parameters
+  ----------
+    components : (...,R) array
+      basis components 
+    
+    basis : (...,R,D) array
+      basis vectors define with respect to the cardinal coordinate 
+      system
+          
+    new_basis : (...,P,D) array
+      new basis vectors define with respect to the cardinal coordinate 
+      system
+    
+  Notes
+  -----
+    if the new basis is not linearly independent then a singular 
+    matrix error will be raised. If the new basis is almost not 
+    linearly independent then a warning will be raised
+
   '''
   # transpose the second and third axes of basis so that each column 
   # is a basis vector rather than each row being a basis vector
@@ -41,94 +103,6 @@ def change_basis(components,basis,new_basis):
   basis = np.einsum('...ij->...ji',basis)
   new_basis = np.einsum('...ij->...ji',new_basis)
   # invert each new collection of basis vectors
-  new_basis_inv = np.linalg.inv(new_basis)
-  return np.einsum('...ij,...jk,...k->...i',new_basis_inv,basis,components)
-
-def flatten_basis(basis):
-  ''' 
-  flattens the basis vectors from a (N,D,D) array to a (N*D,D) array.
-  '''
-  basis = np.asarray(basis)
-  N = basis.shape[0]
-  D = basis.shape[1]
-  basis = basis.reshape((N*D,D))
-  return basis
-
-def flatten(components,basis):
-  ''' 
-  flattens the components from a (N,D) array to a (N*D,) array
-  flattens the basis from a (N,D,D) array to a (N*D,D) array
-  '''
-  components = np.asarray(components)
-  N,D = components.shape
-  components = components.reshape((N*D,))
-  basis = basis.reshape((N*D,D))
-  return components,basis
-  
-def fold_basis(basis):
-  ''' 
-  folds the basis from a (N*3,3) array to a (N,3,3) array
-  '''
-  D = basis.shape[1]
-  basis = basis.reshape((-1,D,D))
-  return basis
-
-def fold(components,basis):
-  ''' 
-  folds the components from a (N*3,) array to a (N,3) array
-  '''
-  D = basis.shape[1]
-  basis = basis.reshape((-1,D,D))
-  components = components.reshape((-1,D))
-  return components,basis
-  
-class VectorField:
-  def __init__(self,components,basis=None):
-    ''' 
-    Parmeters
-    ---------
-      components : (N,3) array 
-      
-      basis : (N,3,3) array, optional
-    '''  
-    components = np.asarray(components)
-    N = components.shape[0]
-    if basis is None:
-      basis = cardinal_basis(N)
-    else:
-      basis = np.asarray(basis)  
-      
-    self.basis = basis
-    self.components = components
-    return
-    
-  def rotate_basis(self,angle,axis):
-    if axis == 0:
-      T = transform.basis_transform_x(angle)
-    elif axis == 1:
-      T = transform.basis_transform_y(angle)
-    elif axis == 2:
-      T = transform.basis_transform_z(angle)
-      
-    self.components = T(self.components)
-    self.basis = T.inverse()(self.components)
-    return 
-
-  def stretch_basis(self,factor,axis):
-    S = [0.0,0.0,0.0]
-    S[axis] = factor
-    T = transform.basis_stretch(S)
-    self.components = T(self.components)
-    self.basis = T.inverse()(self.components)
-    return 
-    
-  def get_cardinal_components(self):  
-    return cardinal_components(self.components,self.basis)
-    
-  def get_basis(self):
-    return np.array(self.basis,copy=True)
-
-  def get_components(self):
-    return np.array(self.basis,copy=True)
-    
-    
+  new_basis_inv = ginv(new_basis)
+  out = np.einsum('...ij,...jk,...k->...i',new_basis_inv,basis,components)
+  return out
