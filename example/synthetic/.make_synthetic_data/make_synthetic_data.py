@@ -15,8 +15,8 @@ dip = 45.0 # degrees
 length = 200000.0 # meters
 width = 60000.0 # meters
 seg_pos_geo = [-84.2,43.3,0.0] # top center of patch
-Nl = 10
-Nw = 10
+Nl = 60
+Nw = 30
 
 ## observation points
 #####################################################################
@@ -79,7 +79,17 @@ slippy.quiver.quiver(pos_cart[:,0],pos_cart[:,1],disp[:,0],disp[:,1],
 
 ### write true slip solution
 #####################################################################
-slippy.io.write_gps_data(pos_geo,disp,sigma,'synthetic_gps.txt')
+patches_pos_cart =[i.patch_to_user([0.5,1.0,0.0]) for i in Ps]
+patches_pos_geo = slippy.bm.cartesian_to_geodetic(patches_pos_cart,bm)
+patches_strike = [i.strike for i in Ps]
+patches_dip = [i.dip for i in Ps]
+patches_length = [i.length for i in Ps]
+patches_width = [i.width for i in Ps]
+
+slippy.io.write_slip_data(patches_pos_geo,
+                          patches_strike,patches_dip,
+                          patches_length,patches_width,
+                          slip,'true_slip.txt')
 
 ### write out synthetic gps data
 #####################################################################

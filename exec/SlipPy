@@ -8,12 +8,12 @@ p = argparse.ArgumentParser(
       description='''Static coseismic slip inversion tool. All of the 
       below arguments must be provided unless otherwise indicated.  
       The arguments can be provided through the command line, using a 
-      SON file, or a combination of both. The entries in the JSON file 
-      are used as the default arguments which can then be overridden 
-      by command line arguments. The JSON file must be in the current 
-      directory and be named "config.json". See the contents of 
-      SlipPy/example/synthetic for example config files and input 
-      files''')
+      JSON file, or a combination of both. The entries in the JSON 
+      file are used as the default arguments which can then be 
+      overridden by command line arguments. The JSON file must be in 
+      the current directory and be named "config.json". See the 
+      contents of SlipPy/example/synthetic for example config files 
+      and input files''')
       
 p.add_argument('-v','--verbose',action='count',default=0,
                help='''controls verbosity''')
