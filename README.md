@@ -36,5 +36,4 @@ SlipPy will take a few seconds to run using the default settings in `config.json
 ```
 $ plot_slippy --slip_file true_slip.txt --observed_gps_file synthetic_gps.txt
 ```
-
-
+![alt tag](https://github.com/treverhines/SlipPy/tree/master/example/synthetic/.make_synthetic_data/true_slip.png)
