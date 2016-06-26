@@ -7,7 +7,7 @@
 "Nlength":20,
 "Nwidth":10,
 "basis1":[1.0,0.0,0.0],
-"penalty":0.01,
+"penalty":10.0,
 "_insar_input_file":"synthetic_insar.txt",
 "gps_input_file":"synthetic_gps.txt",
 "gps_output_file":"predicted_gps.txt",

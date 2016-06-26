@@ -77,6 +77,10 @@ slippy.quiver.quiver(pos_cart[:,0],pos_cart[:,1],disp[:,0],disp[:,1],
                      sigma=(sigma[:,0],sigma[:,1],0.0*sigma[:,0]),
                      scale=0.000001)
 
+### write true slip solution
+#####################################################################
+slippy.io.write_gps_data(pos_geo,disp,sigma,'synthetic_gps.txt')
+
 ### write out synthetic gps data
 #####################################################################
 slippy.io.write_gps_data(pos_geo,disp,sigma,'synthetic_gps.txt')

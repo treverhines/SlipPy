@@ -121,13 +121,19 @@ def main(config):
                                         patches_f,
                                         obs_basis_f,
                                         slip_basis_f)
-  
+
+  ### weigh system matrix and data by the uncertainty
+  ###################################################################
+  # weight G by the data uncertainty                                        
+  G /= obs_sigma_f[:,None]
+  obs_disp_f /= obs_sigma_f
+    
   ### build regularization matrix
   ###################################################################
   L = np.zeros((0,Ns*Ds))
   indices = np.arange(Ns*Ds).reshape((Ns,Ds))
   for i in range(Ds): 
-    connectivity = indices[:,i].reshape((seg_Nwidth,seg_Nlength))
+    connectivity = indices[:,i].reshape((seg_Nlength,seg_Nwidth))
     Li = slippy.tikhonov.tikhonov_matrix(connectivity,2,column_no=Ns*Ds)
     L = np.vstack((Li,L))
 
@@ -136,7 +142,7 @@ def main(config):
   ### estimate slip and compute predicted displacement
   #####################################################################
   slip_f = reg_nnls(G,L,obs_disp_f)
-  pred_disp_f = G.dot(slip_f)
+  pred_disp_f = G.dot(slip_f)*obs_sigma_f
 
   slip = slip_f.reshape((Ns,Ds))
   cardinal_slip = slippy.basis.cardinal_components(slip,slip_basis)

@@ -117,7 +117,7 @@ class Patch:
     '''
     # create the top_corners of each subpatch  
     x_patch = np.linspace(0.0,1.0,Nl+1)[:-1]
-    y_patch = np.linspace(1.0,0.0,Nw+1)[:-1]
+    y_patch = np.linspace(0.0,1.0,Nw+1)[:-1]
     x_patch_grid,y_patch_grid = np.meshgrid(x_patch,y_patch)
     x_patch_flat,y_patch_flat = x_patch_grid.ravel(),y_patch_grid.ravel()
     pnt_patch = np.array([x_patch_flat,y_patch_flat,np.zeros(Nl*Nw)]).T
@@ -126,7 +126,7 @@ class Patch:
     width = self.width/Nw
     sub_patches = []
     for p in pnt_data:
-      sub_patches += [Patch(p,length,width,self.strike,self.dip,pos_patch=[0.0,1.0,0.0])]
+      sub_patches += [Patch(p,length,width,self.strike,self.dip,pos_patch=[0.0,0.0,0.0])]
 
     return sub_patches
   

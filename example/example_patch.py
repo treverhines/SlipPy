@@ -16,7 +16,7 @@ ax.set_aspect('equal')
 ### patch specifications
 #####################################################################
 strike = 20.0 # degrees
-dip = 45.0 # degrees
+dip = 60.0 # degrees
 length = 5.0 
 width = 5.0
 pos = [-1.0,2.0,0.0] # top center of patch
