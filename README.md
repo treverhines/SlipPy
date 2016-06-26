@@ -28,9 +28,13 @@ $ python setup.py install
 ## Usage
 
 A synthetic test which demonstrates all the functionality of SlipPy can be found in `example/snythetic`. This directory contains a configuration file, `config.json`, two data files, `synthetic_gps.txt`, and `synthetic_insar.txt`, and a file with the fault slip specification used to generate the synthetic data.  You can test that SlipPy is working properly by navigating to `example/synthetic` and runnning
+```
+$ slippy
+```
+SlipPy will take a few seconds to run using the default settings in `config.json`.  When finished it should have produced three files, `predicted_gps.txt`, `predicted_insar.txt`, and `predicted_slip.txt`. The format for these files is described below. For the purpose of verifying that SlipPy is working properly, I wrote a simple plotting script, `plot_slippy`, and you can view the synthetic "true" slip model and synthetic displacements with the command
 
-$ SlipPy
-
-SlipPy will take a few seconds to run using the default settings in `config.json`.  When finished it should have produced three files, `predicted_gps.txt`, `predicted_insar.txt`, and `predicted_slip.txt`. The format for these files is described below.  
+```
+$ plot_slippy --slip_file true_slip.txt --observed_gps_file synthetic_gps.txt
+```
 
 
