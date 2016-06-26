@@ -1,3 +1,4 @@
 build
+example/synthetic/predicted*
 *.pyc
 *~
