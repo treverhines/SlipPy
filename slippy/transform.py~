@@ -54,11 +54,9 @@ class Transform:
     return Transform(other._M.dot(self._M))
       
   def __add__(self,other):
-    print('CHANGE TRANSFORM MULTIPLICATION TO THEN')
     return self.then(other)
 
   def __sub__(self,other):
-    print('CHANGE TRANSFORM DIVISION TO THEN')
     return self.then(other.inverse())
 
 

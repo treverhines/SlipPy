@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-import modest
 
-@modest.funtime
 def read_gps_data(file_name):  
   ''' 
   FILE FORMAT
@@ -20,7 +18,7 @@ def read_gps_data(file_name):
   pos_geodetic = np.hstack((lonlat,np.zeros((Nx,1))))
   return pos_geodetic,disp,sigma
 
-@modest.funtime
+
 def read_insar_data(file_name):  
   ''' 
   FILE FORMAT
@@ -39,7 +37,7 @@ def read_insar_data(file_name):
   pos_geodetic = np.hstack((lonlat,np.zeros((Nx,1))))
   return pos_geodetic,disp,sigma,basis
 
-@modest.funtime
+
 def read_slip_data(file_name):
   ''' 
   FILE FORMAT
@@ -58,7 +56,6 @@ def read_slip_data(file_name):
   return pos_geodetic,strike,dip,length,width,slip
   
 
-@modest.funtime
 def write_gps_data(pos_geodetic,disp,sigma,file_name):
   ''' 
   FILE FORMAT
@@ -78,7 +75,6 @@ def write_gps_data(pos_geodetic,disp,sigma,file_name):
   return
 
 
-@modest.funtime
 def write_insar_data(pos_geodetic,disp,sigma,basis,file_name):  
   ''' 
   FILE FORMAT
@@ -99,7 +95,6 @@ def write_insar_data(pos_geodetic,disp,sigma,basis,file_name):
   return
 
 
-@modest.funtime
 def write_slip_data(pos_geodetic,strike,dip,length,width,slip,file_name):  
   ''' 
   FILE FORMAT

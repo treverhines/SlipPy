@@ -2,7 +2,6 @@
 import numpy as np
 import transform
 import warnings
-import modest
 
 def ginv(A):
   ''' 
@@ -43,7 +42,6 @@ def cardinal_basis(shape):
   return basis
   
 
-@modest.funtime
 def cardinal_components(components,basis):
   ''' 
   return the vector components in the cardinal coordinate

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 ''' 
 
-this script demonstrates the usage of the functions in cosinv.okada 
+this script demonstrates the usage of the functions in slippy.okada 
 which are dislocation and patch_dislocation. Both functions calculate 
 the displacements resulting from a dislocation in an elastic halfspace
 
 '''
 import numpy as np
-import cosinv.patch
-import cosinv.okada
+import slippy.patch
+import slippy.okada
 import matplotlib.pyplot as plt
 
 ### patch specifications
@@ -31,16 +31,16 @@ obs = np.array([xf,yf,zf]).T
 
 ### create patch instance
 #####################################################################
-p = cosinv.patch.Patch(pos,length,width,strike,dip)
+p = slippy.patch.Patch(pos,length,width,strike,dip)
 
 ### compute displacements
 #####################################################################
 
 # compute displacement by passing all patch geometry parameters  
-disp1,derr1 = cosinv.okada.dislocation(obs,slip,pos,length,width,strike,dip)
+disp1,derr1 = slippy.okada.dislocation(obs,slip,pos,length,width,strike,dip)
 
 # compute displacement by passing a patch instance
-disp2,derr2 = cosinv.okada.patch_dislocation(obs,slip,p)
+disp2,derr2 = slippy.okada.patch_dislocation(obs,slip,p)
 
 ### plot solution
 #####################################################################

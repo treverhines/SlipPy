@@ -15,8 +15,8 @@ dip = 45.0 # degrees
 length = 200000.0 # meters
 width = 60000.0 # meters
 seg_pos_geo = [-84.2,43.3,0.0] # top center of patch
-Nl = 40
-Nw = 20
+Nl = 10
+Nw = 10
 
 ## observation points
 #####################################################################
@@ -77,10 +77,22 @@ slippy.quiver.quiver(pos_cart[:,0],pos_cart[:,1],disp[:,0],disp[:,1],
                      sigma=(sigma[:,0],sigma[:,1],0.0*sigma[:,0]),
                      scale=0.000001)
 
-### write out synthetic data
+### write out synthetic gps data
 #####################################################################
 slippy.io.write_gps_data(pos_geo,disp,sigma,'synthetic_gps.txt')
 
+### dot the synthetic gps data with an arbitrary look vector to get 
+### synthetic insar
+#####################################################################
+look = np.array([1.0,1.0,1.0])
+look = look[None,:].repeat(Nx,axis=0)
+disp = np.einsum('...i,...i',disp,look)
+sigma = 0.01*np.ones((Nx,))
+slippy.io.write_insar_data(pos_geo,disp,sigma,look,'synthetic_insar.txt')
+
+cm = plt.scatter(pos_cart[:,0],pos_cart[:,1],s=100,c=disp,cmap='viridis')
+cbar = plt.colorbar(cm)
+cbar.set_label('displacement along %s' % look[0])
 plt.show()
 
 

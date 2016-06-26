@@ -4,18 +4,17 @@ import slippy.basis
 import slippy.bm
 import slippy.patch
 import slippy.gbuild
+import slippy.tikhonov
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize
 import sys
-import modest
 
-@modest.funtime
 def reg_nnls(G,L,d):
   dext = np.concatenate((d,np.zeros(L.shape[0])))
   Gext = np.vstack((G,L))
   return scipy.optimize.nnls(Gext,dext)[0]
 
-@modest.funtime
 def main(config):
   ### load in all data
   ###################################################################
@@ -66,7 +65,7 @@ def main(config):
     Ngps = 0
 
   if insar_input_file is not None:
-    insar_input = slippy.io.read_gps_data(gps_input_file)    
+    insar_input = slippy.io.read_insar_data(insar_input_file)    
     Ninsar = len(insar_input[0])
     obs_insar_pos_geo = insar_input[0]
     obs_insar_disp = insar_input[1]
@@ -125,7 +124,14 @@ def main(config):
   
   ### build regularization matrix
   ###################################################################
-  L = penalty*np.eye(Ns*Ds)
+  L = np.zeros((0,Ns*Ds))
+  indices = np.arange(Ns*Ds).reshape((Ns,Ds))
+  for i in range(Ds): 
+    connectivity = indices[:,i].reshape((seg_Nwidth,seg_Nlength))
+    Li = slippy.tikhonov.tikhonov_matrix(connectivity,2,column_no=Ns*Ds)
+    L = np.vstack((Li,L))
+
+  L *= penalty
   
   ### estimate slip and compute predicted displacement
   #####################################################################

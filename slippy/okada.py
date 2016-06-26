@@ -1,7 +1,6 @@
 import numpy as np
 import slippy.dc3d
 import warnings
-import modest
 
 def patch_dislocation(x,slip,patch,lamb=3.2e10,mu=3.2e10):
   ''' 
@@ -33,7 +32,6 @@ def patch_dislocation(x,slip,patch,lamb=3.2e10,mu=3.2e10):
                      patch.strike,patch.dip,
                      lamb=lamb,mu=mu)
                       
-@modest.funtime
 def dislocation(x,
                 slip,
                 top_center,

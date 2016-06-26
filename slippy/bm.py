@@ -1,8 +1,6 @@
 import numpy as np
 from mpl_toolkits.basemap import Basemap
-import modest
 
-@modest.funtime
 def geodetic_to_cartesian(pos_geo,basemap):
   ''' 
   Parameters
@@ -28,7 +26,6 @@ def geodetic_to_cartesian(pos_geo,basemap):
   pos_cart[...,1] = pos_y
   return pos_cart
 
-@modest.funtime
 def cartesian_to_geodetic(pos_cart,basemap):
   ''' 
   Parameters
@@ -51,8 +48,7 @@ def cartesian_to_geodetic(pos_cart,basemap):
   pos_geo[...,1] = pos_lat
   return pos_geo
   
-@modest.funtime
-def create_default_basemap(lon_lst,lat_lst,resolution='c'):
+def create_default_basemap(lon_lst,lat_lst,**kwargs):
   ''' 
   creates a basemap that bounds lat_lst and lon_lst
   '''
@@ -64,7 +60,7 @@ def create_default_basemap(lon_lst,lat_lst,resolution='c'):
                    llcrnrlon = -128.0,
                    urcrnrlat = 48.0,
                    urcrnrlon = -53.0,
-                   resolution = 'c')
+                   **kwargs) 
     
   lon_buff = (max(lon_lst) - min(lon_lst))/20.0
   lat_buff = (max(lat_lst) - min(lat_lst))/20.0
@@ -87,6 +83,6 @@ def create_default_basemap(lon_lst,lat_lst,resolution='c'):
                  llcrnrlat = llcrnrlat,
                  urcrnrlon = urcrnrlon,
                  urcrnrlat = urcrnrlat,
-                 resolution = resolution)
+                 **kwargs)
   
 
