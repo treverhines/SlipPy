@@ -10,7 +10,7 @@ ext.append(Extension('DC3D',
 setup(
    name='SlipPy',
    packages=['slippy','slippy/dc3d'],
-   scripts=['exec/SlipPy','exec/PlotSlipPy'],
+   scripts=['exec/slippy','exec/plot_slippy'],
    version='0.1.0',
    description='module for inverting coseismic slip from GPS and InSAR data',
    author='Trever Hines',
