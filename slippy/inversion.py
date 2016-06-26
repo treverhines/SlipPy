@@ -16,24 +16,24 @@ def reg_nnls(G,L,d):
   return scipy.optimize.nnls(Gext,dext)[0]
 
 @modest.funtime
-def main(command_line_kwargs,
-         gps_input_file=None,
-         insar_input_file=None,
-         gps_output_file=None,
-         insar_output_file=None,
-         slip_output_file=None):
-
+def main(config):
   ### load in all data
   ###################################################################
-  seg_strike = command_line_kwargs['strike']
-  seg_dip = command_line_kwargs['dip']
-  seg_length = command_line_kwargs['length']
-  seg_width = command_line_kwargs['width']
-  seg_pos_geo = command_line_kwargs['position']
-  seg_Nlength = command_line_kwargs['Nlength']
-  seg_Nwidth = command_line_kwargs['Nwidth']
-  slip_basis = command_line_kwargs['basis']
-  penalty = command_line_kwargs['penalty']
+  seg_strike = config['strike']
+  seg_dip = config['dip']
+  seg_length = config['length']
+  seg_width = config['width']
+  seg_pos_geo = config['position']
+  seg_Nlength = config['Nlength']
+  seg_Nwidth = config['Nwidth']
+  slip_basis = config['basis']
+  penalty = config['penalty']
+
+  gps_input_file = config['gps_input_file']  
+  insar_input_file = config['insar_input_file']  
+  gps_output_file = config['gps_output_file']  
+  insar_output_file = config['insar_output_file']  
+  slip_output_file = config['slip_output_file']  
   
   obs_disp_f = np.zeros((0,))
   obs_sigma_f = np.zeros((0,))

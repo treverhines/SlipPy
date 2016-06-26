@@ -1,0 +1,17 @@
+{
+"strike":70.0,
+"dip":45.0,
+"length":200000.0,
+"width":60000.0,
+"position":[-84.2,43.3,0.0],
+"Nlength":40,
+"Nwidth":40,
+"basis1":[1.0,1.0,0.0],
+"basis2":[1.0,-1.0,0.0],
+"penalty":0.01,
+"gps_input_file":"synthetic_gps.txt",
+"gps_output_file":"predicted_gps.txt",
+"insar_output_file":"predicted_insar.txt",
+"slip_output_file":"predicted_slip.txt"
+}
+

@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
                               [1.0,0.0,0.0],
                               [1.0,1.0,0.0],
                               [0.0,1.0,0.0]])
-    corners_data = P.patch_to_data(corners_patch)
+    corners_data = P.patch_to_user(corners_patch)
     true_corners_data = np.array([[5.0,0.0,0.0],
                                   [5.0,10.0,0.0],
                                   [0.0,10.0,0.0],

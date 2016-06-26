@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import cosinv.patch
+import slippy.patch
 import numpy as np
 import unittest
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
     width = 5.0
     pos = [0.0,0.0,0.0]
     pos_patch = [0.0,1.0,0.0] 
-    P = cosinv.patch.Patch(pos,length,width,strike,dip,pos_patch=pos_patch)
+    P = slippy.patch.Patch(pos,length,width,strike,dip,pos_patch=pos_patch)
     corners_patch = np.array([[0.0,0.0,0.0],
                               [1.0,0.0,0.0],
                               [1.0,1.0,0.0],

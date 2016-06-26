@@ -20,12 +20,14 @@ params = {'strike':70.0,
           'Nlength':40,
           'Nwidth':20,
           'basis':[[1.0,1.0,0.0],[1.0,-1.0,0.0]],
-          'penalty':0.01}
+          'penalty':0.01,
+          'gps_input_file':'synthetic_gps.txt',
+          'gps_output_file':'predicted_gps.txt',
+          'slip_output_file':'predicted_slip.txt',
+          'insar_input_file':None,
+          'insar_output_file':None}
 
-slippy.inversion.main(params,
-                      gps_input_file='synthetic_gps.txt',
-                      gps_output_file='predicted_gps.txt',
-                      slip_output_file='predicted_slip.txt')
+slippy.inversion.main(params)
 modest.summary()                   
 
 pred_pos_geo,pred_disp,pred_sigma = slippy.io.read_gps_data('predicted_gps.txt')
