@@ -4,16 +4,16 @@ SlipPy (pronounced slip-ee) is a tool for inferring static coseismic slip from G
 ## Features
  * Simultaneous inversion of GPS and InSAR data 
  * Laplacian smoothing
- * estimation of up to three slip components and as few as one 
- * easily customizable bounds on slip direction
- * conversions between geodetic and cartesian coordinate systems are all handled under the hood
+ * Estimation of up to three slip components and as few as one 
+ * Easily customizable bounds on slip direction
+ * Conversions between geodetic and cartesian coordinate systems are all handled under the hood
 
 ## Limitations
 
  * SlipPy currently allows for only one planar fault segment
  
 ## Dependencies
-SlipPy requires a fortran compiler for the Okada 1992 dislocation solution (thanks to Ben Thompson for making the wrapper https://github.com/tbenthompson/okada_wrapper). As for python packages, SlipPy just requires numpy, scipy, matplotlib, and basemap.   
+SlipPy requires a fortran compiler for the Okada 1992 dislocation solution (thanks to Ben Thompson for making the wrapper https://github.com/tbenthompson/okada_wrapper). As for python packages, SlipPy just requires numpy, scipy, matplotlib, and basemap. Some of the example scripts make plots using the viridis colormap, which is new in matplotlib 1.5.  SlipPy also makes extensive use of the numpy.einsum function, which has different behavior in older versions of numpy. It is best to make sure that all these packages are up to date.     
 
 ## Installation
 download SlipPy
@@ -65,11 +65,11 @@ All of the necessary user defined parameters are given in the file `config.json`
 ```
 You can view a complete description of all of these parameters with the command, 
 ```
-$slippy -h   
+$ slippy -h   
 ```
 SlipPy uses the values in `config.json` as default values, which can then be overwritten with a command line argument. For example, to invert for slip on a fault with a 40 degree dip you can use the command
 ```
-slippy --dip 40
+$ slippy --dip 40
 ```
 If a necessary parameter is not given in either the config.json file or via the command line then slippy will inform you of the missing parameter.
 
@@ -93,7 +93,7 @@ The input and output files for insar data also have the same format. Here are th
 -84.5774 43.8300 -0.0222 0.0100 0.5773 0.5773 0.5773
 ...
 ```
-disp_los, sigma_lost are the displacements and uncertainties along the look direction. The look direction, which is the vector pointing from the observation point to the satellite, is given by Ve, V_n, and V_u. The line of sight vector should be normalized to 1.0.      
+disp_los, sigma_los are the displacements and uncertainties along the look direction. The look direction, which is the vector pointing from the observation point to the satellite, is given by Ve, V_n, and V_u. The line of sight vector should be normalized to 1.0.      
 
 SlipPy produces an output file containing the geometric and slip information for each fault patch.  Here is an example
 
@@ -110,11 +110,11 @@ lon, lat, and depth describe the location of the top center of each fault patch 
 ### Slip basis vectors
 The slip basis vectors, which are specified with the arguments 'basis1', 'basis2', or 'basis3', are used to bound the slip solution.  Slip solutions are constrained to be within the positive span of the slip basis vectors.  This is perhaps best illustrated with an example.  Suppose our config.json file has no basis entried in it.  We can invert for slip with the constraint that slip is left-lateral with the command
 ```
-slippy --basis1 1.0 0.0 0.0
+$ slippy --basis1 1.0 0.0 0.0
 ```
 where the arguments are for the left-lateral, thrust, and tensile component of our only slip basis vector. If we want slip to be within 45 degrees of left lateral then we need to supply two slip basis functions with the command
 ```
-slippy --basis1 1.0 1.0 0.0 --basis2 1.0 -1.0 0.0
+$ slippy --basis1 1.0 1.0 0.0 --basis2 1.0 -1.0 0.0
 ```
 there is no need to normalize the slip basis components.
 
