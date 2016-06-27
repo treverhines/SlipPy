@@ -9,7 +9,6 @@ SlipPy (pronounced slip-ee) is a tool for inferring static coseismic slip from G
  * Conversions between geodetic and cartesian coordinate systems are all handled under the hood
 
 ## Limitations
-
  * SlipPy currently allows for only one planar fault segment
  
 ## Dependencies
@@ -26,7 +25,6 @@ $ cd SlipPy
 $ python setup.py install
 ```
 ## Usage
-
 A synthetic test which demonstrates all the functionality of SlipPy can be found in `example/snythetic`. This directory contains a configuration file, `config.json`, two data files, `synthetic_gps.txt`, and `synthetic_insar.txt`, and a file with the fault slip specification used to generate the synthetic data.  You can test that SlipPy is working properly by navigating to `example/synthetic` and running
 ```
 $ slippy
@@ -96,7 +94,6 @@ The input and output files for insar data also have the same format. Here are th
 disp_los, sigma_los are the displacements and uncertainties along the look direction. The look direction, which is the vector pointing from the observation point to the satellite, is given by Ve, V_n, and V_u. The line of sight vector should be normalized to 1.0.      
 
 SlipPy produces an output file containing the geometric and slip information for each fault patch.  Here is an example
-
 ```
 # lon[degrees] lat[degrees] depth[m] strike[degrees] dip[degrees] length[m] width[m] left-lateral[m] thrust[m] tensile[m]
 -85.1514 42.6431 -41012.1933 70.0000 45.0000 3333.3333 2000.0000 0.0952 0.0000 0.0000
