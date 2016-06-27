@@ -10,7 +10,7 @@ p = argparse.ArgumentParser(
       The arguments can be provided through the command line, using a 
       JSON file, or a combination of both. The entries in the JSON 
       file are used as the default arguments which can then be 
-      overridden by command line arguments. The JSON file must be in 
+      overwritten by command line arguments. The JSON file must be in 
       the current directory and be named "config.json". See the 
       contents of SlipPy/example/synthetic for example config files 
       and input files''')
