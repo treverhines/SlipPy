@@ -62,4 +62,3 @@ class Test(unittest.TestCase):
     self.assertTrue(np.all(np.isclose(point2,point1)))
       
 
-unittest.main()

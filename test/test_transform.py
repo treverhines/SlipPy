@@ -47,4 +47,3 @@ class Test(unittest.TestCase):
     soln = np.array([0.0,1.0,0.0]) 
     self.assertTrue(np.all(np.isclose(T(point),soln)))
 
-unittest.main()

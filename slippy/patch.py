@@ -83,7 +83,7 @@ class Patch:
     if np.any(pnt_data[:,2] > tol):
       warnings.warn('patch has positive z coordinate')
 
-  def patch_to_user(self,x,inverse=False):
+  def patch_to_user(self,x):
     ''' 
     transforms points from the patch to user coordinate system
     

@@ -24,4 +24,3 @@ class Test(unittest.TestCase):
                                   [0.0,0.0,0.0]])
     self.assertTrue(np.all(np.isclose(corners_data,true_corners_data)))
 
-unittest.main()

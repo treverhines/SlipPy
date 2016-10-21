@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-import transform
+import slippy.transform
 import warnings
 
 def ginv(A):
