@@ -5,7 +5,7 @@
 "width":60000,
 "Nlength":30,
 "Nwidth":10,
-"penalty":50.0,
+"penalty":10.0,
 "strike":70.0,
 "dip":45.0,
 "position":[-84.2,43.3,0.0],

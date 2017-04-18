@@ -99,6 +99,7 @@ slippy.io.write_gps_data(pos_geo,disp,sigma,'synthetic_gps.txt')
 ### synthetic insar
 #####################################################################
 look = np.array([1.0,1.0,1.0])
+look = look/np.linalg.norm(look)
 look = look[None,:].repeat(Nx,axis=0)
 disp = np.einsum('...i,...i',disp,look)
 sigma = 0.01*np.ones((Nx,))
